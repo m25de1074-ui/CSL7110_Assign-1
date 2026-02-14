@@ -1,15 +1,5 @@
 # CSL7110_Assign-1
-
-
-Perfect 👍 I’ve gone through the uploaded files (`WordCount.java`, `WordCountQ9.java`, input/output samples) and combined that with your Spark scripts for Q10–Q12.
-
-Below is a **clean, beginner-friendly README outline** that covers **Q1–Q12**, based on your assignment structure and implemented scripts.
-
-You can copy-paste this into your GitHub `README.md`.
-
 ---
-
-# CSL7110 – Big Data Analytics Assignment 1
 
 **Hadoop MapReduce + Apache Spark**
 
@@ -26,7 +16,7 @@ It demonstrates:
 
 ---
 
-# 📂 Project Structure
+# Project Structure
 
 ```
 WordCount_Prj/
@@ -35,15 +25,14 @@ WordCount_Prj/
 ├── WordCountQ9.java            # Q9 WordCount with custom split size & execution time
 ├── input.txt                   # Sample input file (WordCount)
 ├── output.txt                  # Sample WordCount output
-├── output200.txt               # Additional output sample
-└── README.md
+└── output200.txt               # Additional output sample
 ```
 
 ---
 
-# 🧩 Q1–Q8: Hadoop MapReduce – WordCount
+#  Q1–Q8: Hadoop MapReduce – WordCount
 
-### 📌 File: `WordCount.java`
+###  File: `WordCount.java`
 
 Implements classic WordCount using:
 
@@ -52,7 +41,7 @@ Implements classic WordCount using:
 * Cleans punctuation
 * Converts to lowercase
 
-### 🔍 Core Logic
+###  Core Logic
 
 From your code:
 
@@ -68,7 +57,7 @@ This:
 * Keeps only alphabetic characters
 * Normalizes case
 
-### ▶ Run
+###  Run
 
 ```bash
 hdfs dfs -put input.txt /user/vboxuser/input
@@ -108,131 +97,195 @@ To analyze performance impact of different input split sizes.
 
 ---
 
-#  Q10 – Metadata Extraction (Spark)
+Demonstrates large-scale text processing and analysis using **Apache Spark** and **HDFS**.
+We use a collection of Project Gutenberg books (≈400+ text files) to perform:
+1. Metadata Extraction
+2. TF-IDF & Cosine Similarity
+3. Author Influence Network Analysis
+The implementation uses **PySpark (DataFrame API)** and runs in local mode on Hadoop.
 
-###  File: `metadata_extraction.py`
+---
 
-Extracts from each book:
+# Project Structure
 
-* Title
-* Release Year
-* Language
-* Encoding
-
-Using **regular expressions**.
-
-### Example Extracted Metadata
-
-| file_name | title | release_year | language | encoding |
-| --------- | ----- | ------------ | -------- | -------- |
-
-### 📊 Analysis Performed
-
-* Books released per year
-* Most common language
-* Average title length
-
-### ▶ Run
-
-```bash
-spark-submit metadata_extraction.py
+```
+CSL7110_Spark/
+│
+├── load_books.py
+├── metadata_analysis.py
+├── tfidf_similarity.py
+└── author_influence_network.py
 ```
 
 ---
 
-# Q11 – TF-IDF & Cosine Similarity
+# Script Descriptions
 
-###  File: `tfidf_similarity.py`
+## `load_books.py`
 
-Steps:
+### Purpose:
 
-1. Tokenization
-2. Stopword removal
-3. TF calculation (`HashingTF`)
-4. IDF calculation
-5. TF-IDF vector generation
-6. Cosine similarity between books
+Loads all book `.txt` files from HDFS and verifies dataset integrity.
 
-### Example Output
+### Core Functionality:
+
+* Reads all text files from HDFS
+* Creates Spark DataFrame
+* Displays file count and sample records
+
+### Why It Exists:
+
+Ensures Spark + HDFS setup is working before running analysis.
+
+---
+
+## `metadata_analysis.py`  (Q10)
+
+### Purpose:
+
+Extracts and analyzes metadata from book headers.
+
+### Core Functionality:
+
+* Extracts:
+
+  * Title
+  * Release Year
+  * Language
+  * Encoding
+* Cleans missing/invalid values
+* Performs basic analysis:
+
+  * Books per year
+  * Most common language
+  * Average title length
+
+### Output:
+
+Statistical summary of metadata distribution.
+
+---
+
+## `tfidf_similarity.py`  (Q11)
+
+### Purpose:
+
+Finds similar books using TF-IDF and Cosine Similarity.
+
+### Core Functionality:
+
+* Tokenizes text
+* Removes stopwords
+* Applies:
+
+  * HashingTF
+  * IDF
+* Computes cosine similarity between books
+* Displays top 5 most similar books for a given file
+
+### Output:
+
+Example:
 
 ```
 Top 5 books similar to 10.txt
 ```
 
-### ▶ Run
+### Concept Demonstrated:
 
-```bash
-spark-submit tfidf_similarity.py
+Text similarity using distributed feature engineering.
+
+---
+
+## `author_influence_network.py`  (Q12)
+
+### Purpose:
+
+Builds a simplified author influence graph.
+
+### Core Functionality:
+
+* Extracts:
+
+  * Author
+  * Release Year
+* Creates directional edges:
+
+  ```
+  Author A → Author B
+  ```
+
+  if Author B released a book within 5 years after Author A.
+* Calculates:
+
+  * Out-degree (authors influenced)
+  * In-degree (authors influenced by others)
+* Displays top 5 authors in each category
+
+### Concept Demonstrated:
+
+Graph-like analysis using Spark DataFrames.
+
+---
+
+# System Requirements
+
+* Ubuntu / Linux
+* Java 11
+* Hadoop (HDFS running)
+* Apache Spark 3.x
+* Python 3.x
+* numpy installed (`sudo apt install python3-numpy`)
+
+---
 ```
 
 ---
 
-#  Q12 – Author Influence Network
+# Concepts Covered
 
-###  File: `author_influence.py`
-
-Creates a **graph-like influence network** where:
-
-Two authors are connected if:
-
-```
-|year1 - year2| <= X years
-```
-
-(Default: X = 5 years)
-
-### Outputs
-
-* Top 5 authors by Out-Degree
-* Top 5 authors by In-Degree
-
-This demonstrates:
-
-* Self-join in Spark
-* Graph-style edge construction
-* Degree computation using groupBy()
-
-### ▶ Run
-
-```bash
-spark-submit author_influence.py
-```
+* Distributed text processing
+* Regular expression extraction
+* DataFrame transformations
+* TF-IDF feature engineering
+* Cosine similarity
+* Graph construction via self-join
+* Degree centrality analysis
 
 ---
 
-# 🛠 Technologies Used
+# Limitations
 
-* Hadoop 3.x
-* Apache Spark 3.5.x
-* PySpark
-* Java (MapReduce)
-* Ubuntu VM
-* HDFS
+* Influence is based only on publication year (simplified model)
+* Full pairwise joins may not scale to millions of books
+* Metadata extraction depends on consistent formatting
 
 ---
 
-# Key Learning Outcomes
+# Learning Outcomes
 
-✔ Hadoop MapReduce architecture
-✔ Spark DataFrame API
-✔ Text cleaning & regex extraction
-✔ TF-IDF implementation
-✔ Cosine similarity
-✔ Graph-like network modeling in Spark
-✔ Performance tuning (split size)
+This project demonstrates:
 
----
+* How to use Spark with HDFS
+* Large-scale text analytics
+* Feature engineering for NLP
+* Building graph-like relationships without dedicated graph libraries
+* Understanding scalability considerations in distributed systems
+
+
+
+
 
 # How to Run the Full Project
 
-### 1️⃣ Start Hadoop
+###  Start Hadoop
 
 ```bash
 start-dfs.sh
 jps
 ```
 
-### 2️⃣ Run Hadoop WordCount
+###  Run Hadoop WordCount
 
 ```bash
 hadoop jar WordCount.jar WordCount input output
@@ -256,9 +309,6 @@ spark-submit author_influence.py
 ```python
 spark.sparkContext.setLogLevel("ERROR")
 ```
-
-* Influence network is simplified and does not represent true historical influence.
-
 ---
 
 # Final Remarks
