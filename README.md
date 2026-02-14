@@ -238,7 +238,6 @@ Graph-like analysis using Spark DataFrames.
 * numpy installed (`sudo apt install python3-numpy`)
 
 ---
-```
 
 ---
 
